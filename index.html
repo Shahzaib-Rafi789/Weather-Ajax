@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather Application</title>
+</head>
+<body>
+    <h1>Weather Application</h1>
+    <label for="city-input">Enter City Name:</label>
+    <input type="text" id="city-input">
+    <button onclick="getWeather()">Get Weather</button>
+    <div id="weather-info"></div>
+
+    <script>
+        function getWeather() {
+            var city = document.getElementById('city-input').value;
+            var xhr = new XMLHttpRequest();
+            var apiKey = '371283f13d56e1ba41fbe2ab5e1dc451'; // Replace with your API key
+            var url = 'https://api.openweathermap.org/data/2.5/weather?q=' + city + '&appid=' + apiKey;
+
+            xhr.onreadystatechange = function() {
+                if (xhr.readyState === XMLHttpRequest.DONE) {
+                    if (xhr.status === 200) {
+                        var weatherData = JSON.parse(xhr.responseText);
+                        displayWeather(weatherData);
+                    } else {
+                        console.error('Error:', xhr.status);
+                    }
+                }
+            };
+
+            xhr.open('GET', url, true);
+            xhr.send();
+        }
+
+        function displayWeather(data) {
+            var weatherInfo = document.getElementById('weather-info');
+            weatherInfo.innerHTML = `
+                <h2>${data.name}, ${data.sys.country}</h2>
+                <p>Temperature: ${Math.round(data.main.temp - 273.15)}°C</p>
+                <p>Description: ${data.weather[0].description}</p>
+            `;
+        }
+    </script>
+</body>
+</html>
